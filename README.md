@@ -22,7 +22,7 @@ pip install -r requirements.txt
 caso haja algum erro abra o arquivo requiriments.txt olhe para ver o nome do pacote e faça o seguinte:
 pip install <nome do pacote>
 
-===============================================================================================================================================================================================================
+=====================================================================================================================
 
 Criando o Projeto Django
 
