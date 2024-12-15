@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block title %}Cadastrar Imóvel{% endblock %}
+
+{% load static %}
+
+{% block content %}
+<div class="container-fluid vh-100">
+    <div class="row h-100">
+
+        <!-- Imagem do Imóvel como Background -->
+        <div class="col-lg-6 d-none d-lg-flex align-items-center justify-content-center" style="background: url('{% static 'image\imovel.jpg' %}') no-repeat center center; background-size: cover; box-shadow: inset 0 0 10px rgba(0,0,0,0.7);">
+            <h1 class="text-white fw-bold text-center" style="background: rgba(0, 0, 0, 0.8); padding: 30px; border-radius: 15px; font-size: 2.5rem;">
+                Encontre o lar dos seus sonhos com apenas <span style="color: #FFD700;">um clique</span>
+            </h1>
+        </div>
+
+        <!-- Formulário -->
+        <div class="col-lg-6 d-flex align-items-center justify-content-center">
+            <form action="{% url 'immobile-create' %}" method="post" enctype="multipart/form-data" class="card p-4 shadow" style="max-width: 500px; width: 100%; background: #fefefe; border-radius: 15px; border: 2px solid #FFD700; max-height: 80vh; overflow-y: auto;">
+                {% csrf_token %}
+                <h4 class="mb-3 text-center text-primary" style="font-weight: bold;">Cadastrar Imóvel no <span style="color: #FFD700;">Locaverso</span></h4>
+                
+                {% for field in form %}
+                <div class="mb-3">
+                    <label for="{{field.id_for_label}}" class="form-label fw-bold">{{field.label}}</label>
+                    {{field}}
+                    {% if field.errors %}
+                    <div class="text-danger small mt-1">
+                        {{field.errors|join:", "}}
+                    </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+                
+                <button type="submit" class="btn btn-primary w-100 mt-3" style="background-color: #FFD700; border: none; color: #000; font-weight: bold;">Salvar</button>
+            </form>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

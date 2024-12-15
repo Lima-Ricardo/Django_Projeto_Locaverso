@@ -1,0 +1,128 @@
+{% extends 'base.html' %}
+
+{% block title %}Relatório de Imóveis{% endblock %}
+
+{% block content %}
+<div class="container mt-4" style="background: linear-gradient(to bottom, #e0e0e0, #b0b0b0); min-height: 100vh; padding-bottom: 50px;">
+
+    <!-- Filtros com Glassmorphism Escurecido -->
+    <div class="row g-3 p-4 rounded-3" style="background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(10px); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);">
+
+        <!-- Pesquisa de Cliente -->
+        <div class="col-md-4">
+            <label for="clientSearch" class="form-label text-white">Nome do Cliente ou E-mail</label>
+            <form class="d-flex" action="{% url 'reports' %}">
+                <div class="input-group">
+                    <input name="client" id="clientSearch" type="search" class="form-control" placeholder="Pesquisar cliente..." value="{{ request.GET.client }}">
+                    <button class="btn bg-success text-white" type="submit">
+                        <i class="fas fa-search"></i> <!-- Ícone de lupa -->
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Filtro de Data -->
+        <div class="col-md-4">
+            <label class="form-label text-white">Intervalo de Datas</label>
+            <form class="d-flex gap-2" action="{% url 'reports' %}">
+                <input name="dt_start" type="date" value="{{ request.GET.dt_start }}" class="form-control">
+                <input name="dt_end" type="date" value="{{ request.GET.dt_end }}" class="form-control">
+                <button class="btn btn-outline-light" type="submit">
+                    <i class="fas fa-filter"></i> Filtrar
+                </button>
+            </form>
+        </div>
+
+        <!-- Filtro de Status -->
+        <div class="col-md-2">
+            <label for="statusFilter" class="form-label text-white">Status Locação</label>
+            <form action="{% url 'reports' %}">
+                <select name="is_locate" id="statusFilter" class="form-select" onchange="this.form.submit()">
+                    <option value="">Todos</option>
+                    <option value="True" {% if request.GET.is_locate == 'True' %}selected{% endif %}>Locado</option>
+                    <option value="False" {% if request.GET.is_locate == 'False' %}selected{% endif %}>Não Locado</option>
+                </select>
+            </form>
+        </div>
+
+        <!-- Filtro de Tipo de Imóvel -->
+        <div class="col-md-2">
+            <label for="typeFilter" class="form-label text-white">Tipo de Imóvel</label>
+            <form action="{% url 'reports' %}">
+                <select name="type_item" id="typeFilter" class="form-select" onchange="this.form.submit()">
+                    <option value="">Todos</option>
+                    <option value="APARTAMENTO" {% if request.GET.type_item == 'APARTAMENTO' %}selected{% endif %}>Apartamento</option>
+                    <option value="KITNET" {% if request.GET.type_item == 'KITNET' %}selected{% endif %}>Kitnet</option>
+                    <option value="CASA" {% if request.GET.type_item == 'CASA' %}selected{% endif %}>Casa</option>
+                </select>
+            </form>
+        </div>
+
+        <!-- Resetar Filtros -->
+        <div class="col-md-1">
+            <label for="idReset" class="form-label text-white">Resetar</label>
+            <a class="btn btn-danger" href="{% url 'reports' %}">
+                <i class="fas fa-window-close"></i>
+            </a>
+        </div>  
+    </div>
+
+    <!-- Tabela de Relatório com Glassmorphism Escurecido -->
+    <div class="card shadow-lg mt-4" style="background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(10px); border-radius: 15px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);">
+        <div class="card-header" style="background-color: #2D6A4F; color: white;">
+            <h4 class="m-0">Relatório de Imóveis</h4>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover table-striped" style="color: white;">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>#</th>
+                            <th>Registro Inicial</th>
+                            <th>Registro Final</th>
+                            <th>Cliente</th>
+                            <th>Código</th>
+                            <th>Imóvel</th>
+                            <th>Valor</th>
+                            <th>Locado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for immobile in immobiles %}
+                        <tr class="{% if forloop.counter0|divisibleby:2 %}table-light{% else %}table-secondary{% endif %}">
+                            <td>{{ immobile.id }}</td>
+                            <td>
+                                {% for location in immobile.reg_location.all %}
+                                    {{ location.dt_start|date:"d/m/Y" }}
+                                {% endfor %}
+                            </td>
+                            <td>
+                                {% for location in immobile.reg_location.all %}
+                                    {{ location.dt_end|date:"d/m/Y" }}
+                                {% endfor %}
+                            </td>
+                            <td>
+                                {% for location in immobile.reg_location.all %}
+                                    {{ location.client }}
+                                {% endfor %}
+                            </td>
+                            <td>{{ immobile.code }}</td>
+                            <td>{{ immobile.type_item }}</td>
+                            <td>R$ {{ immobile.price }}</td>
+                            <td>
+                                {% if immobile.is_locate %}
+                                    <span class="badge bg-success">Locado</span>
+                                {% else %}
+                                    <span class="badge bg-danger">Não Locado</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}
