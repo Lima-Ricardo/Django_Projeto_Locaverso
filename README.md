@@ -125,3 +125,4 @@ INSTALLED_APPS = [
 # Django_Projeto_Locaverso
 # Django_Projeto_Locaverso
 # Django_Projeto_Locaverso
+# Django_Projeto_Locaverso
